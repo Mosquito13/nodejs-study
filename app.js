@@ -1,32 +1,25 @@
 const path = require('path');
 const express = require('express');
 const bodyParser = require('body-parser');
-// const expressHandlebars = require('express-handlebars'); // handlebars templating
 
 const rootDir = require('./util/path');
 
-const adminData = require('./routes/admin');
+const adminRoutes = require('./routes/admin');
 const shopRoutes = require('./routes/shop');
+
+const errorController = require('./controllers/error');
 
 const app = express();
 
-// app.engine('handlebars', expressHandlebars({ defaultLayout: 'main-layout' })); // handlebars templating
-// app.set('view engine', 'handlebars'); // handlebars templating
-// app.set('view engine', 'pug');
-app.set('view engine', 'ejs');
+app.set('view engine', 'pug');
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(rootDir, 'public')));
 
-app.use('/admin', adminData.routes);
+app.use('/admin', adminRoutes);
 app.use(shopRoutes);
 
-app.use((req, res) => {
-  res.status(404).render('page-not-found', {
-    pageTitle: 'Page not found',
-    routePath: 'notFound'
-  });
-});
+app.use(errorController.getPageNotFound);
 
 app.listen(3000, () => {
   console.log('Server listening on port 3000');
