@@ -8,7 +8,9 @@ router.get('/', (req, res) => {
   res.render('shop', {
     pageTitle: 'Shop',
     routePath: '/',
-    products: adminData.products
+    products: adminData.products,
+    activeShop: true,
+    productCSS: true
   });
 });
 

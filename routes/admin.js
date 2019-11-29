@@ -7,7 +7,10 @@ const products = [];
 router.get('/add-product', (req, res) => {
   res.render('add-product', {
     pageTitle: 'Add product',
-    routePath: '/add-product'
+    routePath: '/add-product',
+    activeAddProduct: true,
+    productCSS: true,
+    formsCSS: true
   });
 });
 
