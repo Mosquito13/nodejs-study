@@ -1,0 +1,31 @@
+.user-form__container {
+  display: flex;
+  flex-direction: column;
+}
+
+.user-form__label {
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.user-form__field {
+  border: 1px solid black;
+  border-radius: 3px;
+  height: 1.5rem;
+}
+
+.user-form__submit {
+  margin: 0.5rem 0;
+  border: 1px solid black;
+  border-radius: 3px;
+  background-color: darkkhaki;
+  font-weight: bold;
+  height: 1.5rem;
+  width: 5rem;
+  cursor: pointer;
+}
+
+.user-form__submit:hover {
+  background-color: darkorchid;
+  color: white;
+}

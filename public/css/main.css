@@ -1,0 +1,32 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.page-header {
+  background-color: darkkhaki;
+  border-bottom: 2px solid black;
+  padding: 1rem;
+}
+
+.page-header__nav-item {
+  font-weight: bold;
+  text-decoration: none;
+  margin: 0 1rem;
+  color: black;
+}
+
+.page-header__nav-item:hover,
+.page-header__nav-item:active,
+.page-header__nav-item.active {
+  color: blueviolet;
+}
+
+main {
+  margin: 1rem;
+}
