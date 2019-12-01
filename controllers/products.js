@@ -14,9 +14,11 @@ exports.postAddProduct = (req, res) => {
 };
 
 exports.getProducts = (req, res) => {
-  res.render('shop', {
-    pageTitle: 'Shop',
-    routePath: '/',
-    products: Product.fetchAll()
+  Product.fetchAll(products => {
+    res.render('shop', {
+      pageTitle: 'Shop',
+      routePath: '/',
+      products
+    })
   });
 };
