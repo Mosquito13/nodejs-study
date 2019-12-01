@@ -14,6 +14,14 @@ html(lang="en")
                     li.main-header__list-item
                         a(href="/", class=(routePath === '/' ? 'active' : '')) Shop
                     li.main-header__list-item
+                        a(href="/product-list", class=(routePath === '/product-list' ? 'active' : '')) Products
+                    li.main-header__list-item
+                        a(href="/cart", class=(routePath === '/cart' ? 'active' : '')) Cart
+                    li.main-header__list-item
+                        a(href="/orders", class=(routePath === '/orders' ? 'active' : '')) Orders
+                    li.main-header__list-item
                         a(href="/admin/add-product", class=(routePath === '/add-product' ? 'active' : '')) Add Product
+                    li.main-header__list-item
+                        a(href="/admin/product-list", class=(routePath === '/admin-product-list' ? 'active' : '')) Admin Products
         main
             block content
