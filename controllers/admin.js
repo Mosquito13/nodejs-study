@@ -4,7 +4,7 @@ exports.getProducts = (req, res) => {
   Product.fetchAll(products => {
     res.render('admin/product-list', {
       pageTitle: 'Product list',
-      routePath: '/admin-product-list',
+      routePath: '/admin-products',
       products
     });
   });

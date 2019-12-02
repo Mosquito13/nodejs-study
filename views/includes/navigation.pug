@@ -1,0 +1,22 @@
+mixin navigationItems(blockName) 
+    nav(class=blockName + '__nav')
+        ul(class=blockName + '__list')
+            li(class=blockName + '__list-item')
+                a(href="/", class=(routePath === '/' ? 'active' : '')) Shop
+            li(class=blockName + '__list-item')
+                a(href="/products", class=(routePath === '/products' ? 'active' : '')) Products
+            li(class=blockName + '__list-item')
+                a(href="/cart", class=(routePath === '/cart' ? 'active' : '')) Cart
+            li(class=blockName + '__list-item')
+                a(href="/orders", class=(routePath === '/orders' ? 'active' : '')) Orders
+            li(class=blockName + '__list-item')
+                a(href="/admin/add-product", class=(routePath === '/add-product' ? 'active' : '')) Add Product
+            li(class=blockName + '__list-item')
+                a(href="/admin/products", class=(routePath === '/admin-products' ? 'active' : '')) Admin Products
+
+.backdrop
+header.main-header
+    button#side-menu-toggle Menu
+    +navigationItems('main-header')
+
++navigationItems('mobile-header')

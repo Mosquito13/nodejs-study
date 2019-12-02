@@ -24,12 +24,22 @@ module.exports = class Product {
   }
 
   save() {
+    this.id = new Date().getTime().toString();
+
     getProductsFromFile(products => {
       products.push(this);
 
       fs.writeFile(filePath, JSON.stringify(products), err => {
-        console.log(err);
+        if (err) console.log(err);
       });
+    });
+  }
+
+  static findById(id, callback) {
+    getProductsFromFile(products => {
+      const product = products.find(p => p.id === id);
+
+      return callback(product);
     });
   }
 

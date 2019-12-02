@@ -8,20 +8,7 @@ html(lang="en")
         link(rel="stylesheet", href="/css/main.css")
         block styles
     body
-        header.main-header
-            nav.main-header__nav
-                ul.main-header__list
-                    li.main-header__list-item
-                        a(href="/", class=(routePath === '/' ? 'active' : '')) Shop
-                    li.main-header__list-item
-                        a(href="/product-list", class=(routePath === '/product-list' ? 'active' : '')) Products
-                    li.main-header__list-item
-                        a(href="/cart", class=(routePath === '/cart' ? 'active' : '')) Cart
-                    li.main-header__list-item
-                        a(href="/orders", class=(routePath === '/orders' ? 'active' : '')) Orders
-                    li.main-header__list-item
-                        a(href="/admin/add-product", class=(routePath === '/add-product' ? 'active' : '')) Add Product
-                    li.main-header__list-item
-                        a(href="/admin/product-list", class=(routePath === '/admin-product-list' ? 'active' : '')) Admin Products
+        include ../includes/navigation.pug
         main
             block content
+        script(src="/js/main.js")
