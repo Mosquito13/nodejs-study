@@ -18,8 +18,31 @@ exports.postAddProduct = (req, res) => {
 };
 
 exports.getAddProduct = (req, res) => {
-  res.render('admin/add-product', {
+  res.render('admin/edit-product', {
     pageTitle: 'Add product',
     routePath: '/add-product'
+  });
+};
+
+exports.getEditProduct = (req, res) => {
+  const { edit } = req.query;
+
+  if (!edit) {
+    return res.redirect('/');
+  }
+
+  const { productId } = req.params;
+
+  Product.findById(productId, product => {
+    if (!product) {
+      res.redirect('/');
+    }
+
+    res.render('admin/edit-product', {
+      pageTitle: 'Edit product',
+      routePath: '/edit-product',
+      product,
+      edit
+    });
   });
 };
