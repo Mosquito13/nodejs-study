@@ -2,6 +2,7 @@ const path = require('path');
 const express = require('express');
 const bodyParser = require('body-parser');
 
+const db = require('./util/database');
 const rootDir = require('./util/path');
 
 const adminRoutes = require('./routes/admin');
