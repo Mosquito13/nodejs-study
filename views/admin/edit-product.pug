@@ -10,7 +10,7 @@ block content
 
     form.product-form(action="/admin/" + formAction, method="POST", autocomplete="off")
         if edit
-            input(type="hidden", name="id", value=(edit ? product.id : ''))#id
+            input(type="hidden", name="id", value=(edit ? product._id : ''))#id
         .form-control
             label(for="title") Title
             input(type="text", name="title", value=(edit ? product.title : ''))#title
