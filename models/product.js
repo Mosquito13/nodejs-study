@@ -2,12 +2,13 @@ const ObjectID = require('mongodb').ObjectID;
 const getDb = require('../util/database').getDb;
 
 class Product {
-  constructor(title, price, description, imageUrl, id) {
+  constructor(title, price, description, imageUrl, id, userId) {
     this.title = title;
     this.price = price;
     this.description = description;
     this.imageUrl = imageUrl;
-    this._id = id;
+    this._id = id ? new ObjectID(id) : null;
+    this.userId = userId;
   }
 
   save() {
@@ -23,9 +24,7 @@ class Product {
       operation = db.collection('products').insertOne(this);
     }
 
-    return operation
-      .then()
-      .catch(err => console.log(err));
+    return operation.catch(err => console.log(err));
   }
 
   static fetchAll() {
@@ -44,9 +43,17 @@ class Product {
 
     return db
       .collection('products')
-      .find({ _id: ObjectID(productId) })
+      .find({ _id: new ObjectID(productId) })
       .next()
       .then(product => product)
+      .catch(err => console.log(err));
+  }
+
+  static deleteById(productId) {
+    const db = getDb();
+
+    return db.collection('products')
+      .deleteOne({ _id: new ObjectID(productId) })
       .catch(err => console.log(err));
   }
 }
