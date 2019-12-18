@@ -48,7 +48,6 @@ exports.getCheckout = (req, res) => {
 exports.getCart = (req, res) => {
   req.user
     .getCart()
-    .then(cart => cart.getProducts())
     .then(cartProducts => {
       res.render('shop/cart', {
         pageTitle: 'Cart',
@@ -61,46 +60,18 @@ exports.getCart = (req, res) => {
 
 exports.addToCart = (req, res) => {
   const { productId } = req.body;
-  let fetchedCart,
-    newQuantity = 1;
 
-  req.user
-    .getCart()
-    .then(cart => {
-      fetchedCart = cart;
-      return cart.getProducts({ where: { id: productId } });
-    })
-    .then(products => {
-      let product;
-
-      if (products.length > 0) {
-        product = products[0];
-      }
-
-      if (product) {
-        newQuantity = product.cartItem.quantity + 1;
-
-        return product;
-      } else {
-        return Product.findByPk(productId);
-      }
-    })
-    .then(product =>
-      fetchedCart.addProduct(product, {
-        through: { quantity: newQuantity }
-      })
-    )
+  Product.findById(productId)
+    .then(product => req.user.addToCart(product))
     .then(() => res.redirect('/cart'))
     .catch(err => console.log(err));
 };
 
 exports.postCartDeleteProduct = (req, res) => {
   const { productId } = req.body;
-
+  
   req.user
-    .getCart()
-    .then(cart => cart.getProducts({ where: { id: productId } }))
-    .then(([product]) => product.cartItem.destroy())
+    .removeFromCart(productId)
     .then(() => res.redirect('/cart'))
     .catch(err => console.log(err));
 };
@@ -109,33 +80,14 @@ exports.postCreateOrder = (req, res) => {
   let fetchedCart;
 
   req.user
-    .getCart()
-    .then(cart => {
-      fetchedCart = cart;
-      return cart.getProducts();
-    })
-    .then(products =>
-      req.user
-        .createOrder()
-        .then(order => {
-          return order.addProducts(
-            products.map(p => {
-              p.orderItem = { quantity: p.cartItem.quantity };
-
-              return p;
-            })
-          );
-        })
-        .catch(err => console.log(err))
-    )
-    .then(() => fetchedCart.setProducts(null))
+    .addOrder()
     .then(() => res.redirect('/orders'))
     .catch(err => console.log(err));
 };
 
 exports.getOrders = (req, res) => {
   req.user
-    .getOrders({ include: 'products' })
+    .getOrders()
     .then(orders => {
       res.render('shop/orders', {
         pageTitle: 'Orders',
