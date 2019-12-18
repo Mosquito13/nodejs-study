@@ -1,7 +1,7 @@
 const Product = require('../models/product');
 
 exports.getProducts = (req, res) => {
-  Product.fetchAll()
+  Product.find()
     .then(products => {
       res.render('admin/product-list', {
         pageTitle: 'Product list',
@@ -14,14 +14,13 @@ exports.getProducts = (req, res) => {
 
 exports.postAddProduct = (req, res) => {
   const { title, imageUrl, description, price } = req.body;
-  const product = new Product(
+  const product = new Product({
     title,
     price,
     description,
     imageUrl,
-    null,
-    req.user._id
-  );
+    userId: req.user
+  });
 
   product
     .save()
@@ -60,10 +59,15 @@ exports.getEditProduct = (req, res) => {
 exports.postEditProduct = (req, res) => {
   const { id, title, imageUrl, description, price } = req.body;
 
-  const product = new Product(title, price, description, imageUrl, id);
+  Product.findById(id)
+    .then(product => {
+      product.title = title;
+      product.price = price;
+      product.imageUrl = imageUrl;
+      product.description = description;
 
-  product
-    .save()
+      return product.save();
+    })
     .then(() => res.redirect('/'))
     .catch(err => console.log(err));
 };
@@ -71,7 +75,8 @@ exports.postEditProduct = (req, res) => {
 exports.postDeleteProduct = (req, res) => {
   const { productId } = req.body;
 
-  Product.deleteById(productId)
+  Product.findById(productId)
+    .then(product => product.remove())
     .then(() => res.redirect('/admin/products'))
     .catch(err => console.log(err));
 };
