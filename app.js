@@ -4,6 +4,8 @@ const path = require('path');
 const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
+const session = require('express-session');
+const MongoDbStore = require('connect-mongodb-session')(session);
 
 const rootDir = require('./util/path');
 const User = require('./models/user');
@@ -14,17 +16,34 @@ const authRoutes = require('./routes/auth');
 
 const errorController = require('./controllers/error');
 
-const app = express();
+const { DB_STRING, SESSION_SECRET } = process.env;
 
-const { DB_STRING } = process.env;
+const app = express();
+const store = new MongoDbStore({
+  uri: DB_STRING,
+  collection: 'sessions'
+});
 
 app.set('view engine', 'pug');
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(rootDir, 'public')));
 
+app.use(
+  session({
+    secret: SESSION_SECRET,
+    resave: false,
+    saveUninitialized: false,
+    store
+  })
+);
+
 app.use((req, res, next) => {
-  User.findById('5df97f96dbd5c92288b4fed0')
+  if (!req.session.user) {
+    next();
+  }
+
+  User.findById(req.session.user._id)
     .then(user => {
       req.user = user;
       next();
@@ -53,7 +72,7 @@ mongoose
 
         user.save();
       }
-    })
+    });
     app.listen(3000, () => console.log('Server listening on port 3000'));
   })
   .catch(err => console.log(err));

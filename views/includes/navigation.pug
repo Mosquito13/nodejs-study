@@ -5,17 +5,23 @@ mixin navigationItems(blockName)
                 a(href="/", class=(routePath === '/' ? 'active' : '')) Shop
             li(class=blockName + '__list-item')
                 a(href="/products", class=(routePath === '/products' ? 'active' : '')) Products
-            li(class=blockName + '__list-item')
-                a(href="/cart", class=(routePath === '/cart' ? 'active' : '')) Cart
-            li(class=blockName + '__list-item')
-                a(href="/orders", class=(routePath === '/orders' ? 'active' : '')) Orders
-            //- li(class=blockName + '__list-item')
-            //-     a(href="/admin/add-product", class=(routePath === '/add-product' ? 'active' : '')) Add Product
-            //- li(class=blockName + '__list-item')
-            //-     a(href="/admin/products", class=(routePath === '/admin-products' ? 'active' : '')) Admin Products
+            if isAuthenticated
+                li(class=blockName + '__list-item')
+                    a(href="/cart", class=(routePath === '/cart' ? 'active' : '')) Cart
+                li(class=blockName + '__list-item')
+                    a(href="/orders", class=(routePath === '/orders' ? 'active' : '')) Orders
+                li(class=blockName + '__list-item')
+                    a(href="/admin/add-product", class=(routePath === '/add-product' ? 'active' : '')) Add Product
+                li(class=blockName + '__list-item')
+                    a(href="/admin/products", class=(routePath === '/admin-products' ? 'active' : '')) Admin Products
         ul(class=blockName + '__list')
-            li(class=blockName + '__list-item')
-                a(href="/login", class=(routePath === '/login' ? 'active' : '')) Login
+            if isAuthenticated
+                li(class=blockName + '__list-item')
+                    form(action="/logout", method="POST")
+                        button(type="submit") Logout
+            else
+                li(class=blockName + '__list-item')
+                    a(href="/login", class=(routePath === '/login' ? 'active' : '')) Login
 
 .backdrop
 header.main-header

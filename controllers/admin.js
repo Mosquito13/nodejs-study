@@ -6,6 +6,7 @@ exports.getProducts = (req, res) => {
       res.render('admin/product-list', {
         pageTitle: 'Product list',
         routePath: '/admin-products',
+        isAuthenticated: req.session.authenticated,
         products
       });
     })
@@ -31,7 +32,8 @@ exports.postAddProduct = (req, res) => {
 exports.getAddProduct = (req, res) => {
   res.render('admin/edit-product', {
     pageTitle: 'Add product',
-    routePath: '/add-product'
+    routePath: '/add-product',
+    isAuthenticated: req.session.authenticated
   });
 };
 
@@ -49,6 +51,7 @@ exports.getEditProduct = (req, res) => {
       res.render('admin/edit-product', {
         pageTitle: 'Edit product',
         routePath: '/edit-product',
+        isAuthenticated: req.session.authenticated,
         product,
         edit
       });
