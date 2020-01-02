@@ -60,14 +60,21 @@ form {
   padding: 0;
 }
 
-.main-header__list-item a {
+.main-header__list-item a,
+.main-header__list-item button {
+  font: inherit;
+  background: transparent;
+  border: none;
+  cursor: pointer;
   text-decoration: none;
   color: white;
 }
 
 .main-header__list-item a:hover,
 .main-header__list-item a:active,
-.main-header__list-item a.active {
+.main-header__list-item a.active,
+.main-header__list-item button:hover,
+.main-header__list-item button:active {
   color: #ffeb3b;
 }
 
@@ -102,16 +109,22 @@ form {
   padding: 0;
 }
 
-.mobile-header__list-item a {
+.mobile-header__list-item a,
+.mobile-header__list-item button {
   text-decoration: none;
   color: black;
   font-size: 1.5rem;
   padding: 0.5rem 2rem;
+  background: transparent;
+  border: none;
+  cursor: pointer;
 }
 
 .mobile-header__list-item a:active,
 .mobile-header__list-item a:hover,
-.mobile-header__list-item a.active {
+.mobile-header__list-item a.active,
+.mobile-header__list-item button:hover,
+.mobile-header__list-item button:active {
   background: #00695c;
   color: white;
   border-radius: 3px;
