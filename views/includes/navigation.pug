@@ -22,6 +22,8 @@ mixin navigationItems(blockName)
             else
                 li(class=blockName + '__list-item')
                     a(href="/login", class=(routePath === '/login' ? 'active' : '')) Login
+                li(class=blockName + '__list-item')
+                    a(href="/signup", class=(routePath === '/signup' ? 'active' : '')) Signup
 
 .backdrop
 header.main-header

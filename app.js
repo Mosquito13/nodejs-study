@@ -60,19 +60,6 @@ app.use(errorController.getPageNotFound);
 mongoose
   .connect(DB_STRING)
   .then(() => {
-    User.findOne().then(user => {
-      if (!user) {
-        const user = new User({
-          name: 'Mosquito',
-          email: 'mosquito@bresque.co',
-          cart: {
-            items: []
-          }
-        });
-
-        user.save();
-      }
-    });
     app.listen(3000, () => console.log('Server listening on port 3000'));
   })
   .catch(err => console.log(err));
