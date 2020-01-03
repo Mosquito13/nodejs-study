@@ -7,7 +7,6 @@ exports.getIndex = (req, res) => {
       res.render('shop/index', {
         pageTitle: 'Shop',
         routePath: '/',
-        isAuthenticated: req.session.authenticated,
         products
       })
     )
@@ -20,7 +19,6 @@ exports.getProducts = (req, res) => {
       res.render('shop/product-list', {
         pageTitle: 'Product list',
         routePath: '/products',
-        isAuthenticated: req.session.authenticated,
         products
       })
     )
@@ -35,7 +33,6 @@ exports.getProduct = (req, res) => {
       res.render('shop/product-detail', {
         pageTitle: 'Product detail',
         routePath: '/products',
-        isAuthenticated: req.session.authenticated,
         product
       });
     })
@@ -57,7 +54,6 @@ exports.getCart = (req, res) => {
       res.render('shop/cart', {
         pageTitle: 'Cart',
         routePath: '/cart',
-        isAuthenticated: req.session.authenticated,
         cartProducts: user.cart.items
       });
     })
@@ -94,7 +90,7 @@ exports.postCreateOrder = (req, res) => {
       const order = new Order({
         products,
         user: {
-          name: req.user.name,
+          email: req.user.email,
           userId: req.user._id
         }
       });
@@ -113,7 +109,6 @@ exports.getOrders = (req, res) => {
       res.render('shop/orders', {
         pageTitle: 'Orders',
         routePath: '/orders',
-        isAuthenticated: req.session.authenticated,
         orders
       });
     })

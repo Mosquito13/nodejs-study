@@ -16,6 +16,8 @@ exports.postLogin = (req, res) => {
   User.findOne({ email })
     .then(user => {
       if (!user) {
+        req.flash('error', 'Invalid email.');
+
         return res.redirect('/login');
       }
 
@@ -32,6 +34,7 @@ exports.postLogin = (req, res) => {
             });
           }
 
+          req.flash('error', 'Invalid password.');
           res.redirect('/login');
         })
         .catch(err => {
@@ -63,6 +66,7 @@ exports.postSignup = (req, res) => {
   User.findOne({ email })
     .then(user => {
       if (user) {
+        req.flash('error', 'E-mail already exists.');
         return res.redirect('/signup');
       }
 
