@@ -1,9 +1,12 @@
 const { uniqWith, isEqual } = require('lodash');
-const { validationResult } = require('express-validator/check');
+const { validationResult } = require('express-validator');
+
+const redirectToError = require('../util/error-redirect');
 
 const Product = require('../models/product');
 
-exports.getProducts = (req, res) => {
+exports.getProducts = (req, res, next) => {
+  console.log(redirectToError);
   Product.find({ userId: req.user._id })
     .then(products => {
       res.render('admin/product-list', {
@@ -12,10 +15,10 @@ exports.getProducts = (req, res) => {
         products
       });
     })
-    .catch(err => console.log(err));
+    .catch(err => redirectToError(err, next));
 };
 
-exports.postAddProduct = (req, res) => {
+exports.postAddProduct = (req, res, next) => {
   const { title, imageUrl, description, price } = req.body;
 
   const errors = validationResult(req);
@@ -40,7 +43,7 @@ exports.postAddProduct = (req, res) => {
   product
     .save()
     .then(() => res.redirect('/admin/products'))
-    .catch(err => console.log(err));
+    .catch(err => redirectToError(err, next));
 };
 
 exports.getAddProduct = (req, res) => {
@@ -50,7 +53,7 @@ exports.getAddProduct = (req, res) => {
   });
 };
 
-exports.getEditProduct = (req, res) => {
+exports.getEditProduct = (req, res, next) => {
   const { edit } = req.query;
 
   if (!edit) {
@@ -68,10 +71,10 @@ exports.getEditProduct = (req, res) => {
         edit
       });
     })
-    .catch(err => console.log(err));
+    .catch(err => redirectToError(err, next));
 };
 
-exports.postEditProduct = (req, res) => {
+exports.postEditProduct = (req, res, next) => {
   const { id, title, imageUrl, description, price } = req.body;
 
   const errors = validationResult(req);
@@ -100,13 +103,13 @@ exports.postEditProduct = (req, res) => {
       return product.save()
         .then(() => res.redirect('/admin/products'))
     })
-    .catch(err => console.log(err));
+    .catch(err => redirectToError(err, next));
 };
 
-exports.postDeleteProduct = (req, res) => {
+exports.postDeleteProduct = (req, res, next) => {
   const { productId } = req.body;
 
   Product.deleteOne({ _id: productId, userId: req.user._id })
     .then(() => res.redirect('/admin/products'))
-    .catch(err => console.log(err));
+    .catch(err => redirectToError(err, next));
 };

@@ -1,11 +1,13 @@
 const crypto = require('crypto');
 const { uniqWith, isEqual } = require('lodash');
 
+const redirectToError = require('../util/error-redirect');
+
 const User = require('../models/user');
 const bcrypt = require('bcryptjs');
 const nodemailer = require('nodemailer');
 const sendgridTransport = require('nodemailer-sendgrid-transport');
-const { validationResult } = require('express-validator/check');
+const { validationResult } = require('express-validator');
 
 const { BCRYPT_SALT, SENDGRID_API_KEY, MAIL_SENDER } = process.env;
 
@@ -24,7 +26,7 @@ exports.getLogin = (req, res) => {
   });
 };
 
-exports.postLogin = (req, res) => {
+exports.postLogin = (req, res, next) => {
   const { email, password } = req.body;
 
   const errors = validationResult(req);
@@ -74,7 +76,7 @@ exports.postLogin = (req, res) => {
           res.redirect('/login');
         });
     })
-    .catch(err => console.log(err));
+    .catch(err => redirectToError(err, next));
 };
 
 exports.postLogout = (req, res) => {
@@ -92,7 +94,7 @@ exports.getSignup = (req, res) => {
   });
 };
 
-exports.postSignup = (req, res) => {
+exports.postSignup = (req, res, next) => {
   const { email, password, confirmPassword } = req.body;
 
   const errors = validationResult(req);
@@ -126,7 +128,7 @@ exports.postSignup = (req, res) => {
         html: '<h1>Xesquedele!</h1>'
       });
     })
-    .catch(err => console.log(err));
+    .catch(err => redirectToError(err, next));
 };
 
 exports.getResetPassword = (req, res) => {
@@ -136,7 +138,7 @@ exports.getResetPassword = (req, res) => {
   });
 };
 
-exports.postResetPassword = (req, res) => {
+exports.postResetPassword = (req, res, next) => {
   crypto.randomBytes(32, (err, buffer) => {
     if (err) {
       console.log(err);
@@ -169,11 +171,11 @@ exports.postResetPassword = (req, res) => {
           `
         })
       })
-      .catch(err => console.log(err));
+      .catch(err => redirectToError(err, next));
   });
 };
 
-exports.getUpdatePassword = (req, res) => {
+exports.getUpdatePassword = (req, res, next) => {
   const { token } = req.params;
 
   User.findOne({ resetToken: token, resetTokenExpiration: { $gt: Date.now() } })
@@ -185,10 +187,10 @@ exports.getUpdatePassword = (req, res) => {
         resetToken: token
       });
     })
-    .catch(err => console.log(err));
+    .catch(err => redirectToError(err, next));
 };
 
-exports.postUpdatePassword = (req, res) => {
+exports.postUpdatePassword = (req, res, next) => {
   const { userId, password, resetToken } = req.body;
   let resetUser;
 
@@ -204,5 +206,5 @@ exports.postUpdatePassword = (req, res) => {
       return resetUser.save();
     })
     .then(() => res.redirect('/login'))
-    .catch(err => console.log(err));
+    .catch(err => redirectToError(err, next));
 };

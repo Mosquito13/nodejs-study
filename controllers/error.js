@@ -4,3 +4,10 @@ exports.getPageNotFound = (req, res) => {
     routePath: 'notFound'
   });
 };
+
+exports.getServerError = (req, res) => {
+  res.status(500).render('server-error', {
+    pageTitle: 'Error',
+    routePath: 'serverError'
+  })
+};
