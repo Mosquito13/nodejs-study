@@ -5,15 +5,15 @@ block styles
     link(rel="stylesheet", href="/css/forms.css")
 
 block content
-    form.login-form(action="/signup", method="POST")
+    form.login-form(action="/signup", method="POST", novalidate)
         .form-control
             label(for="email") E-mail
-            input(type="email", name="email")#email
+            input(type="email", name="email", value=(formValues && formValues.email), class=(hasErrorByField("email") ? "invalid" : ""))#email
         .form-control
             label(for="password") Password
-            input(type="password", name="password")#password
+            input(type="password", name="password", value=(formValues && formValues.password), class=(hasErrorByField("password") ? "invalid" : ""))#password
         .form-control
             label(for="confirmPassword") Confirm password
-            input(type="confirmPassword", name="confirmPassword")#confirmPassword
+            input(type="password", name="confirmPassword", value=(formValues && formValues.confirmPassword), class=(hasErrorByField("confirmPassword") ? "invalid" : ""))#confirmPassword
         input(type="hidden", name="_csrf", value=csrfToken)
         button.btn(type="submit") Signup

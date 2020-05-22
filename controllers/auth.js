@@ -1,9 +1,11 @@
 const crypto = require('crypto');
+const { uniqWith, isEqual } = require('lodash');
 
 const User = require('../models/user');
 const bcrypt = require('bcryptjs');
 const nodemailer = require('nodemailer');
 const sendgridTransport = require('nodemailer-sendgrid-transport');
+const { validationResult } = require('express-validator/check');
 
 const { BCRYPT_SALT, SENDGRID_API_KEY, MAIL_SENDER } = process.env;
 
@@ -25,12 +27,26 @@ exports.getLogin = (req, res) => {
 exports.postLogin = (req, res) => {
   const { email, password } = req.body;
 
+  const errors = validationResult(req);
+
+  if (!errors.isEmpty()) {
+    return res.status(422).render('auth/login', {
+      routePath: '/login',
+      pageTitle: 'Login',
+      formValues: { email, password },
+      validationErrors: uniqWith(errors.array(), isEqual)
+    });
+  }
+
   User.findOne({ email })
     .then(user => {
       if (!user) {
-        req.flash('error', 'Invalid email.');
-
-        return res.redirect('/login');
+        return res.status(422).render('auth/login', {
+          routePath: '/login',
+          pageTitle: 'Login',
+          errorMessage: ['E-mail not found'],
+          formValues: { email, password }
+        });
       }
 
       bcrypt
@@ -46,8 +62,12 @@ exports.postLogin = (req, res) => {
             });
           }
 
-          req.flash('error', 'Invalid password.');
-          res.redirect('/login');
+          return res.status(422).render('auth/login', {
+            routePath: '/login',
+            pageTitle: 'Login',
+            errorMessage: ['Invalid password'],
+            formValues: { email, password }
+          });
         })
         .catch(err => {
           console.log(err);
@@ -75,33 +95,36 @@ exports.getSignup = (req, res) => {
 exports.postSignup = (req, res) => {
   const { email, password, confirmPassword } = req.body;
 
-  User.findOne({ email })
-    .then(user => {
-      if (user) {
-        req.flash('error', 'E-mail already exists.');
-        return res.redirect('/signup');
-      }
+  const errors = validationResult(req);
 
-      return bcrypt
-        .hash(password, parseInt(BCRYPT_SALT, 10))
-        .then(hashedPassword => {
-          const user = new User({
-            email,
-            password: hashedPassword,
-            cart: { items: [] }
-          });
+  if (!errors.isEmpty()) {
+    return res.status(422).render('auth/signup', {
+      routePath: '/signup',
+      pageTitle: 'Signup',
+      formValues: { email , password, confirmPassword },
+      validationErrors: uniqWith(errors.array(), isEqual)
+    });
+  }
 
-          return user.save();
-        })
-        .then(() => {
-          res.redirect('/login');
-          return transporter.sendMail({
-            to: email,
-            from: MAIL_SENDER,
-            subject: 'Signup complete',
-            html: '<h1>Xesquedele!</h1>'
-          });
-        });
+  return bcrypt
+    .hash(password, parseInt(BCRYPT_SALT, 10))
+    .then(hashedPassword => {
+      const user = new User({
+        email,
+        password: hashedPassword,
+        cart: { items: [] }
+      });
+
+      return user.save();
+    })
+    .then(() => {
+      res.redirect('/login');
+      return transporter.sendMail({
+        to: email,
+        from: MAIL_SENDER,
+        subject: 'Signup complete',
+        html: '<h1>Xesquedele!</h1>'
+      });
     })
     .catch(err => console.log(err));
 };
@@ -168,7 +191,7 @@ exports.getUpdatePassword = (req, res) => {
 exports.postUpdatePassword = (req, res) => {
   const { userId, password, resetToken } = req.body;
   let resetUser;
-  
+
   User.findOne({ _id: userId, resetToken, resetTokenExpiration: { $gt: Date.now() } })
     .then(user => {
       resetUser = user;

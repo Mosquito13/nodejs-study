@@ -1,3 +1,6 @@
+const { uniqWith, isEqual } = require('lodash');
+const { validationResult } = require('express-validator/check');
+
 const Product = require('../models/product');
 
 exports.getProducts = (req, res) => {
@@ -14,6 +17,18 @@ exports.getProducts = (req, res) => {
 
 exports.postAddProduct = (req, res) => {
   const { title, imageUrl, description, price } = req.body;
+
+  const errors = validationResult(req);
+
+  if (!errors.isEmpty()) {
+    return res.status(422).render('admin/edit-product', {
+      pageTitle: 'Add product',
+      routePath: '/add-product',
+      formValues: { title, imageUrl, price, description },
+      validationErrors: uniqWith(errors.array(), isEqual)
+    });
+  }
+
   const product = new Product({
     title,
     price,
@@ -49,7 +64,7 @@ exports.getEditProduct = (req, res) => {
       res.render('admin/edit-product', {
         pageTitle: 'Edit product',
         routePath: '/edit-product',
-        product,
+        formValues: product,
         edit
       });
     })
@@ -58,6 +73,18 @@ exports.getEditProduct = (req, res) => {
 
 exports.postEditProduct = (req, res) => {
   const { id, title, imageUrl, description, price } = req.body;
+
+  const errors = validationResult(req);
+
+  if (!errors.isEmpty()) {
+    return res.status(422).render('admin/edit-product', {
+      pageTitle: 'Edit product',
+      routePath: '/edit-product',
+      formValues: { _id: id, title, imageUrl, description, price },
+      validationErrors: uniqWith(errors.array(), isEqual),
+      edit: 1
+    });
+  }
 
   Product.findById(id)
     .then(product => {

@@ -1,0 +1,11 @@
+- const hasErrorByField = field => validationErrors && validationErrors.find(err => err.param === field);
+
+mixin errorCard(msg)
+    div.user-message.user-message--error #{msg}
+
+if errorMessage && errorMessage.length > 0
+    +errorCard(errorMessage[0])
+
+if validationErrors && validationErrors.length > 0
+    each validationError in validationErrors
+        +errorCard(validationError.msg)

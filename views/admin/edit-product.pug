@@ -5,23 +5,23 @@ block styles
     link(rel="stylesheet", href="/css/product.css")
 
 block content
-    - var formAction = edit ? 'edit-product' : 'add-product';
-    - var buttonSendText = edit ? 'Update' : 'Add';
+    - const formAction = edit ? 'edit-product' : 'add-product';
+    - const buttonSendText = edit ? 'Update' : 'Add';
 
     form.product-form(action="/admin/" + formAction, method="POST", autocomplete="off")
         if edit
-            input(type="hidden", name="id", value=(edit ? product._id : ''))#id
+            input(type="hidden", name="id", value=(formValues && formValues._id))#id
         .form-control
             label(for="title") Title
-            input(type="text", name="title", value=(edit ? product.title : ''))#title
+            input(type="text", name="title", value=(formValues && formValues.title), class=(hasErrorByField("title") ? "invalid" : ""))#title
         .form-control
             label(for="imageUrl") Image URL
-            input(type="text", name="imageUrl", value=(edit ? product.imageUrl : ''))#imageUrl
+            input(type="text", name="imageUrl", value=(formValues && formValues.imageUrl), class=(hasErrorByField("imageUrl") ? "invalid" : ""))#imageUrl
         .form-control
             label(for="price") Price
-            input(type="number", name="price", step="0.01", value=(edit ? product.price : ''))#price
+            input(type="number", name="price", step="0.01", value=(formValues && formValues.price), class=(hasErrorByField("price") ? "invalid" : ""))#price
         .form-control
             label(for="description") Description
-            textarea(name="description", rows="5") #{(edit ? product.description : '')}
+            textarea(name="description", rows="5", class=(hasErrorByField('description') ? "invalid" : "")) #{(formValues ? formValues.description : "")}
         input(type="hidden", name="_csrf", value=csrfToken)
         button.btn(type="submit") #{buttonSendText}

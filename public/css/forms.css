@@ -25,3 +25,8 @@
 .form-control textarea {
   resize: none;
 }
+
+.form-control input.invalid,
+.form-control textarea.invalid {
+  border-color: red;
+}
